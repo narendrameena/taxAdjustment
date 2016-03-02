@@ -1,0 +1,35 @@
+The first tab "T_Main" has 3 columns that are populated. You can ignore column "Entity" and "Option"
+
+First column is Code
+Second column is Formula: This formula basically describes how the value of the Code is calculated. For example:
+Third column is period and has values e.g. PQ0,PQ1 etc.
+
+for SACI4310, the value in PQ0-3 is SACI4310
+for VAJ22012, the value in PQ0 is VAJ23001+VAJ22010+VAJ23003+VAJ23002 etc.
+
+Most of the formulas have simple mathematical operators, but some have if statements.
+
+One special case of "if" based formula is like this:
+
+'VTJ41004' +IF(VPJ41086 <= -5000, 'A' , if(VPJ41086 > -5000 && VPJ41086 <= 0, 'B', if (VPJ41086 > 0 && VPJ41086 <= 5000, 'C', If (VPJ41086 > 5000 && VPJ41086 <= 10000, 'D', if (VPJ41086 > 10000 && VPJ41086 <= 15000, 'E', if(VPJ41086 > 15000 && VPJ41086 <= 20000, 'F', if(VPJ41086 > 20000 && VPJ41086 <= 25000, 'G', if(VPJ41086 > 25000 && VPJ41086 <= 30000, 'H', if(VPJ41086 > 30000 && VPJ41086 <= 35000, 'I', if (VPJ41086 > 35000 && VPJ41086 <= 40000, 'J', if (VPJ41086 > 40000 && VPJ41086 <= 50000, 'K', 'Z')))))))))))
+
+
+There are about 60 codes that are calculated like this e.g. VTJ41003 value in Q1 is calculated like this etc.
+
+To understand this formula, look at the "Tax Rates Adjustments" worksheet. if VPJ41086 <= -5000, then A meaning "VTJ41004A", then you look for VTJ41004A in the tax rate adjustments sheet (row 28, column C) and depending on period e.g. PQ1, get the value. In this case, is 155.
+
+In some formulas, e.g. for code VPJ41188, the value is calculated as YZSI4310(PQ1)+YZSI4310(PQ2)+YZSI4310(PQ3)+YZSI4310(PQ4). What this means is pick the value of YZSI4310 in period PQ1 and add value of YZSI4310 in PQ2 and YZSI4310 in PQ3 and YZSI4310 in PQ4 and sum it up.
+
+All of these code/formulas are presented in a sequence and MUST be calculated in that sequence. i.e. SACI4310 PQ0-3, PQ0-2,PQ0-1,PQ0 should be calculated first and then VAJ41188 PQ0 must be calculated then VAJ41086 for PQ0 and then VAJ41092 for PQ0 etc. all the way till end. Total 2234 calculations
+
+Please do not hardcode these formulas.
+
+There should be one dataframe that has formulas from T_Main.
+Second should have Tax Rates_Adjsutment info so that this could be like a reference/lookup table
+Third file will be the input file that has values for all the Codes. I have included a sample of how the input file looks like. Please create the complete file for testing
+
+
+
+
+
+

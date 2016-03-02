@@ -1,0 +1,17 @@
+{
+    "contents" : "library(readr)\nlibrary(xlsx)\n\nsource(\"/Users/naru/Documents/R_workshop/txtAdujstment/parserFunctions.R\")\nformulaType <- function(formula){\n  \n  #string1 <- strsplit(formula, \"\\\\+\")[[1]][1]\n  string2 <- strsplit(formula, \"\\\\+\")[[1]][2]\n  string3 <- gsub(\"[\\\\(\\\\)]\", \"\", regmatches(string2, gregexpr(\"\\\\(.*?\\\\)\", string2)))\n  string4 <- strsplit(string3,\",\")[[1]]\n  if(nchar(trimws(gsub(\"'\",\"\",string4[2])))==1){\n   return( problem1(formula))\n  }else{\n    string1 <- gsub(\"\\\\+| + \",\",\",formula)\n    string4 <- strsplit(string1,\",\")[[1]]\n    \n    if(nchar(string4[2]) >5){\n      return(problem2(formula))\n    }\n    else{\n      string1 <- strsplit(formula, \"\\\\+\")[[1]]\n      if(nchar(string1[2]) >8){\n        return(problem3(formula))\n      }else(\n        return(formula)\n      )\n    }\n  }\n}\n\nstring <- \"VTJ41003' +IF(VPJ41086 <= -5000, 'A' , if(VPJ41086 > -5000 && VPJ41086 <= 0, 'B', if (VPJ41086 > 0 && VPJ41086 <= 5000, 'C', If (VPJ41086 > 5000 && VPJ41086 <= 10000, 'D', if (VPJ41086 > 10000 && VPJ41086 <= 15000, 'E', if(VPJ41086 > 15000 && VPJ41086 <= 20000, 'F', if(VPJ41086 > 20000 && VPJ41086 <= 25000, 'G', if(VPJ41086 > 25000 && VPJ41086 <= 30000, 'H', if(VPJ41086 > 30000 && VPJ41086 <= 35000, 'I', if (VPJ41086 > 35000 && VPJ41086 <= 40000, 'J', if (VPJ41086 > 40000 && VPJ41086 <= 50000, 'K', 'Z')))))))))))\"\n\neval(parse(text=formulaType(string)))\n\n##client code \n\nt_main <- read.csv(\"Excel/T_Main.csv\")\nr_adjust  <- read.csv(\"Excel/Rates_Adjustments.csv\",header = TRUE)\nrownames(r_adjust) <- r_adjust[, 1]\ninput <- read.csv(\"Excel/Input.csv\")\n\nhead(t_main)\nhead(r_adjust)\nhead(input)\nt_out <- t_main[,1:3]\nhead(t_out,150)\ndim(t_out)\nt_out$Cvalue <- NA\nhead(t_out)\n\nfor (i in 1:nrow(t_out)){\n  code <- t_out[i,\"Code\"]\n  formula <- t_out[i,\"Formula\"]\n  period <- t_out[i,\"Period\"]\n  \n  dyn_vars <- input[input$Period == period,]\n\n  for (j in 1:nrow(dyn_vars)) {\n    assign(dyn_vars[j,\"Code\"], dyn_vars[j,\"Value\"]) \n  }\n  \n  t_out[t_out$Code == code & t_out$Period == period,]$Cvalue <- eval(parse(text=formulaType(formula)))\n  \n}\nhead(t_out) \nhead(t_out)\nwrite.csv(t_out, \"Ouput.csv\")\n",
+    "created" : 1456931716297.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1122024739",
+    "id" : "9B36D11B",
+    "lastKnownWriteTime" : 1456948044,
+    "path" : "~/Documents/R_workshop/txtAdujstment/R_scr.R",
+    "project_path" : "R_scr.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
